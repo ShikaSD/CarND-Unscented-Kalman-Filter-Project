@@ -91,15 +91,15 @@ void UKF::ProcessMeasurement(MeasurementPackage measurement) {
 
         if (measurement.sensor_type_ == MeasurementPackage::LASER) {
             x_ << measurement.raw_measurements_[0], measurement.raw_measurements_[1], 0, 0, 0;
+            P_ = 0.15 * MatrixXd::Identity(5, 5);
         } else if (measurement.sensor_type_ == MeasurementPackage::RADAR) {
             double rho = measurement.raw_measurements_[0];
             double theta = measurement.raw_measurements_[1];
             double x = rho * cos(theta);
             double y = rho * sin(theta);
             x_ << x, y, 0, 0, 0;
+            P_ = 0.03 * MatrixXd::Identity(5, 5);
         }
-
-        P_ = MatrixXd::Identity(5, 5);
 
         is_initialized_ = true;
         time_us_ = measurement.timestamp_;
@@ -107,7 +107,9 @@ void UKF::ProcessMeasurement(MeasurementPackage measurement) {
         return;
     }
 
-    Prediction((measurement.timestamp_ - time_us_) / 1000000.0);
+    double delta_t = (measurement.timestamp_ - time_us_) / 1000000.0;
+    cout << "delta " << delta_t <<"\n\n";
+    Prediction(delta_t);
     time_us_ = measurement.timestamp_;
 
     if (measurement.sensor_type_ == MeasurementPackage::LASER && use_laser_) {
