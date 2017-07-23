@@ -29,7 +29,9 @@ public:
   MatrixXd P_;
 
   ///* predicted sigma points matrix
-  MatrixXd Xsig_pred_;
+  MatrixXd sig_points_;
+
+  MatrixXd sig_points_aug_;
 
   ///* time when the state is true, in us
   long long time_us_;
@@ -58,6 +60,10 @@ public:
   ///* Weights of sigma points
   VectorXd weights_;
 
+  MatrixXd Q_;
+  MatrixXd R_radar_;
+  MatrixXd R_laser_;
+
   ///* State dimension
   int n_x_;
 
@@ -80,9 +86,9 @@ public:
 
   /**
    * ProcessMeasurement
-   * @param meas_package The latest measurement data of either radar or laser
+   * @param measurement The latest measurement data of either radar or laser
    */
-  void ProcessMeasurement(MeasurementPackage meas_package);
+  void ProcessMeasurement(MeasurementPackage measurement);
 
   /**
    * Prediction Predicts sigma points, the state, and the state covariance
@@ -102,6 +108,10 @@ public:
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+
+private:
+
+  void GenerateSigmaPoints();
 };
 
 #endif /* UKF_H */

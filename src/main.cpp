@@ -1,7 +1,5 @@
 #include <uWS/uWS.h>
-#include <iostream>
 #include "json.hpp"
-#include <math.h>
 #include "ukf.h"
 #include "tools.h"
 
@@ -117,6 +115,8 @@ int main()
     	  double v  = ukf.x_(2);
     	  double yaw = ukf.x_(3);
 
+          std::cout <<ukf.x_ <<std::endl <<std::endl <<ukf.P_ <<std::endl  <<std::endl;
+
     	  double v1 = cos(yaw)*v;
     	  double v2 = sin(yaw)*v;
 
@@ -137,7 +137,8 @@ int main()
           msgJson["rmse_vx"] = RMSE(2);
           msgJson["rmse_vy"] = RMSE(3);
           auto msg = "42[\"estimate_marker\"," + msgJson.dump() + "]";
-          // std::cout << msg << std::endl;
+          std::cout <<RMSE <<std::endl <<std::endl;
+          std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 	  
         }
